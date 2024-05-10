@@ -26,6 +26,7 @@ public class PlayerControler : MonoBehaviour
     private Shooter _shooter;
 
     private bool canShoot = true;
+    private bool isFalling = true;
 
     public float CurrentMoveSpeed
     {
@@ -126,20 +127,25 @@ public class PlayerControler : MonoBehaviour
 
         targetRotation = Quaternion.LookRotation(-_moveInput);
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * rotateSpeed);
+
+        if (isFalling && !isGround)
+            _animator.SetBool(AnimatinsStrings.isFalling, isFalling);
     }
 
     public void OnMove(InputAction.CallbackContext context)
     {
         _moveInput = context.ReadValue<Vector2>();
-
+        isRunning = false;
         if (IsAlive)
         {
             IsMoving = _moveInput != Vector3.zero;
-
             //SetFacingDirection(_moveInput);
         }
         else
+        {
             IsMoving = false;
+            IsRunning = false;
+        }
     }
 
     private void SetFacingDirection(Vector2 moveInput)
@@ -159,6 +165,9 @@ public class PlayerControler : MonoBehaviour
         if (context.started)
             IsRunning = true;
         else if (context.canceled)
+            IsRunning = false;
+
+        if (!isGround)
             IsRunning = false;
     }
 
@@ -207,6 +216,11 @@ public class PlayerControler : MonoBehaviour
     private void IsGroundedUpate(Collision collision, bool value)
     {
         if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGround = value;
+            _animator.SetBool(AnimatinsStrings.isGround, value);
+        }
+        if (collision.gameObject.CompareTag("DestroyGround"))
         {
             isGround = value;
             _animator.SetBool(AnimatinsStrings.isGround, value);

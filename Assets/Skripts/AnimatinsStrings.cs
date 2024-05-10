@@ -20,4 +20,5 @@ public class AnimatinsStrings
     internal static string lockVelocity = "lockVelocity";
     internal static string attackColdown = "attackColdown";
     internal static string attackGunTrigger = "attackGunTrigger";
+    internal static string isFalling = "isFalling";
 }
